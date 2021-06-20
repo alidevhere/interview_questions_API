@@ -1,7 +1,7 @@
 import requests
 import json
-def add_tsv_file():
-    fd = open('file.tsv','r',encoding='utf-8')
+def add_tsv_file(file):
+    fd = open(file,'r',encoding='utf-8')
     text = fd.readlines()
     for line in text:
         line = line.split('    ')
@@ -18,4 +18,16 @@ def add_tsv_file():
         r = requests.post('http://127.0.0.1:5000/add/question/',json=d)
         print(r)
         
-#add_tsv_file()
+#add_tsv_file('file.tsv')
+
+
+def add_mcq(ques,ans,topic_id):
+    dic = {}
+    dic['question']= ques
+    dic['answer'] = ans
+    dic['topic'] = topic_id
+    dic = json.dumps(dic)
+    print(dic)
+    r = requests.post('http://127.0.0.1:5000/add/question/',json=dic)
+    print(r)
+
