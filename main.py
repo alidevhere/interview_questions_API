@@ -32,6 +32,21 @@ def add_ques():
         return jsonify({'success':False,'msg':'Error in adding Question !!'})
 
 
+
+@app.route('/add/questions/',methods=['POST'])
+def add_bulk_ques():
+    questions=request.json['questions_list']
+    t_id = request.json['topic_id']
+    for q in questions:
+       ques= q['question']
+       ans = q['answer']
+       new_q = Question(ques,ans,t_id)
+       db.session.add(new_q)
+       db.session.commit()
+       print('added..')
+    return 'success'
+
+
 @app.route('/add/topic/',methods=['POST'])
 def add_topic():
     #new_topic = Topics(request.json['topic'])
@@ -62,6 +77,28 @@ def view_all_topics():
     return jsonify({'total_topics':len(topics),'all_topics':topics_list})
 
 
+@app.route('/all/questions/<int:id>/',methods=['GET'])
+def get_questions(id):
+    data = Question.query.filter(Question.topic == id).all()
+    #data = js.dumps(data)
+    data = [d.to_json for d in data]
+    return jsonify(data)
+
+
+
+
+
+
+@app.route('/help/',methods=['GET'])
+def help():
+    paths={}
+    paths['/all/questions/<int:id>/']='returns all questions of specified topic id'
+    paths['/all/topics/']='returns list of all topics'
+    paths['/topic/<int:t>/count/']='returns count of questions of specified topic id'
+    paths['/add/topic/']='POST request to add a topic into api DB,provide json in format : {"topic":"OOP"} e.g "topic" is key'
+    paths['/add/question/']='POST request for adding questions e.g {"question":"Question statement","answer":"Correct answer","topic":"any topic name" }'
+    
+    return paths
 
 #run server
 if __name__ == '__main__':

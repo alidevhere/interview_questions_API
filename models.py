@@ -60,6 +60,14 @@ class Question(db.Model):
         self.answer=answer
         self.topic=topic
 
+    @property
+    def to_json(self):
+        dic={}
+        dic['id']=self.id
+        dic['question']=self.question
+        dic['answer'] = self.answer
+        dic['topic'] = self.topic
+        return dic 
 
 # MCQ Schema
 class QuestionSchema(ma.Schema):
