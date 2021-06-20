@@ -23,20 +23,33 @@ class Topics(db.Model):
     id = db.Column(db.Integer,primary_key=True,autoincrement=True)
     topic = db.Column(db.String(100),unique=True)
 
+
+    @property
+    def total_questions(self):
+        print('self id = ',self.id)
+        return Question.query.filter(Question.topic==self.id).count()
+
+    @property
+    def to_json(self):
+        return {'id': self.id,'topic_name': self.topic,'total_questions':self.total_questions}
+
+    #def __str__(self,):
+    #    return f'id : {self.id},topic : {self.topic}'
+
     def __init__(self,topic):
         self.topic =topic
 
 # MCQ Schema
 class TopicsSchema(ma.Schema):
     class Meta:
-        #fields = ['id','topic' ]
+        fields = ['id','topic' ]
         model =Topics
         
 
 
 
 # MCQ class
-class MCQ(db.Model):
+class Question(db.Model):
     id = db.Column(db.Integer,primary_key=True,autoincrement=True)
     question = db.Column(db.String(255),unique=True)
     answer = db.Column(db.String(255))
@@ -49,9 +62,9 @@ class MCQ(db.Model):
 
 
 # MCQ Schema
-class MCQSchema(ma.Schema):
+class QuestionSchema(ma.Schema):
     class Meta:
         #fields = ['id','question','answer','topic' ]
-        model =MCQ
+        model =Question
 
 
